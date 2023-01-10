@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block content %}
+<h1>Все новости</h1>
+{% for post in posts %}
+  <a href=http://127.0.0.1:8000/news/{{post.id}}><h2>{{post.title|censor}}</h2></a>
+  {{post.timeCreation|date:'d M Y' }}
+  <article>{{post.text|truncatechars:15|censor}}</article>
+  <p>
+{% endfor %}
+{% endblock content %}
