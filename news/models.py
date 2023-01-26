@@ -25,6 +25,8 @@ class Author(models.Model):
         self.ratingAuthor = pRat * 3 + cRat + cpRat
         self.save()
 
+    def __str__(self):
+        return self.authorUser
 
 
 
@@ -64,7 +66,7 @@ class Post(models.Model):
         return self.text[0:123] + '...'
 
     def get_absolute_url(self):
-        return reverse('post_list', args=[])
+        return reverse('post_detail', kwargs={'pk': self.pk})
 
 
 class PostCategory(models.Model):

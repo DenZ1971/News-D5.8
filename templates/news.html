@@ -27,9 +27,10 @@ News
    </form>
 <hr>
 {% for post in posts %}
-  <a href=http://127.0.0.1:8000/news/{{post.id}}><h2>{{post.title|censor}}</h2></a>
+  <a href={{ post.get_absolute_url }}><h2>{{post.title|censor}}</h2></a>
   {{post.timeCreation|date:'d M Y' }}
   <article>{{post.text|truncatechars:15|censor}}</article>
+
   <p>
 {% endfor %}
 

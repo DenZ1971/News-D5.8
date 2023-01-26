@@ -40,7 +40,7 @@ class PostsList(ListView):
         context = super().get_context_data(**kwargs)
         # Добавляем в контекст объект фильтрации.
         context['filterset'] = self.filterset
-        #context['is_author'] = self.request.user.groups.filter(name='author')
+
         return context
 
 
@@ -57,8 +57,6 @@ class PostDetail(DetailView):
 
 
 
-
-
 class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post',)
     raise_exception = True
@@ -68,6 +66,13 @@ class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Post
     # и новый шаблон, в котором используется форма.
     template_name = 'post_create.html'
+    success_url = reverse_lazy('post_list')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user.author
+        return super().form_valid(form)
+
+
 
 
 class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -76,11 +81,8 @@ class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
+    success_url = reverse_lazy('post_list')
 
-    #def has_permission(self):
-        #if self.request.user.author != self.get_object().author:
-            #return False
-        #return True
 
 
 
