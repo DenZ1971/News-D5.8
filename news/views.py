@@ -3,6 +3,11 @@ from .models import *
 from .filters import PostFilter
 from .forms import PostForm
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django import *
+from django.contrib.auth.models import User, Group
 
 
 class PostsList(ListView):
@@ -35,7 +40,10 @@ class PostsList(ListView):
         context = super().get_context_data(**kwargs)
         # Добавляем в контекст объект фильтрации.
         context['filterset'] = self.filterset
+        #context['is_author'] = self.request.user.groups.filter(name='author')
         return context
+
+
 
 
 class PostDetail(DetailView):
@@ -47,7 +55,13 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-class PostCreate(CreateView):
+
+
+
+
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
+    raise_exception = True
     # Указываем нашу разработанную форму
     form_class = PostForm
     # модель товаров
@@ -56,13 +70,35 @@ class PostCreate(CreateView):
     template_name = 'post_create.html'
 
 
-class PostUpdate(UpdateView):
+class PostUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
 
+    #def has_permission(self):
+        #if self.request.user.author != self.get_object().author:
+            #return False
+        #return True
 
-class PostDelete(DeleteView):
+
+
+class PostDelete(LoginRequiredMixin,PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+    raise_exception = True
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+@login_required
+def upgrade_user(request):
+    user = request.user
+    group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        group.user_set.add(user)
+        if not hasattr(user, 'author'):
+            Author.objects.create(authorUser=User.objects.get(pk=user.id))
+    return redirect('post_create')
+

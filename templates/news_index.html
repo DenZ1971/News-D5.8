@@ -12,4 +12,14 @@ Post
 <h5>{{ post.timeCreation|date:'d M Y' }}</h5>
 <article>{{ post.text|censor }}</article>
 
+
+{% if perms.news.change_post and user.author == post.author %}
+<a href="{% url 'post_edit' post.id %}">Изменить публикацию</a>
+{% endif %}
+
+{% if perms.news.delete_post and user.author == post.author %}
+<a href="{% url 'post_delete' post.id %}">Удалить публикацию</a>
+{% endif %}
+
+
 {% endblock content %}

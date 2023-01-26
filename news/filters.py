@@ -1,4 +1,4 @@
-#from django_filters import FilterSet, DateTimeFilter, ModelChoiceFilter, CharFilter
+# from django_filters import FilterSet, DateTimeFilter, ModelChoiceFilter, CharFilter
 from django.forms import DateTimeInput
 import django_filters
 from .models import *
@@ -14,7 +14,6 @@ class PostFilter(django_filters.FilterSet):
         label='Название публикации'
     )
 
-
     added_after = django_filters.DateTimeFilter(
         field_name='timeCreation',
         lookup_expr='gt',
@@ -26,22 +25,21 @@ class PostFilter(django_filters.FilterSet):
     )
 
     post_category = django_filters.ModelChoiceFilter(
-        field_name = 'postCategory',
-        queryset = Category.objects.all(),
-        label = 'Категория публикации'
+        field_name='postCategory',
+        queryset=Category.objects.all(),
+        label='Категория публикации'
 
     )
 
+    # class Meta:
+    # В Meta классе мы должны указать Django модель,
+    # в которой будем фильтровать записи.
+    # model = Post
+    # В fields мы описываем по каким полям модели
+    # будет производиться фильтрация.
+    # fields = {
 
-    #class Meta:
-        # В Meta классе мы должны указать Django модель,
-        # в которой будем фильтровать записи.
-        #model = Post
-        # В fields мы описываем по каким полям модели
-        # будет производиться фильтрация.
-        #fields = {
-
-            #'title',
-            #'timeCreation',
-            #'postCategory'
-        #}
+    # 'title',
+    # 'timeCreation',
+    # 'postCategory'
+    # }
